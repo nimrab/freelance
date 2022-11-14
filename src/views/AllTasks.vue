@@ -1,6 +1,6 @@
 <template>
   <h1 class="text-white center">Задач пока нет</h1>
-  <h2>{{tasks}}</h2>
+  <h2>{{storeTasks}}</h2>
   <template>
     <h3 class="text-white">Всего активных задач: 0</h3>
     <div class="card">
@@ -22,18 +22,30 @@
 
 <script>
 import AppStatus from '@/components/AppStatus'
-import {ref} from 'vue'
+import {ref, onMounted} from 'vue'
+// import {useRoute, useRouter} from "vue-router";
+import {useStore} from 'vuex'
 
 export default {
   components: {AppStatus},
   setup() {
 
+    // const router = useRouter()
+    // const route = useRoute()
+    const store = useStore()
+
+
     const tasks = ref([
       {name: 'task1', status: 'done'},
     ])
 
+    onMounted(()=> {
+      store.dispatch('fetchTasks')
+    })
+
     return {
       tasks,
+      storeTasks: store.getters.tasksArr,
     }
   }
 }
