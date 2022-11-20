@@ -5,26 +5,30 @@ export const store = createStore({
   state() {
     return {
       apiUrl: `https://freelance-fbf64-default-rtdb.firebaseio.com/tasks.json`,
-      tasks: []
+      tasks: [],
+      isLoading: false,
     }
   },
 
   getters: {
     tasksArr(state) {
       return state.tasks
-    }
+    },
+    taskItem: ({tasks}) => (id) => {
+      return tasks.find( t => t.id === id ) ?? {}
+    },
   },
 
   mutations: {
-    addTask(state, task) {
-      state.tasks.push( task )
+    addTask({tasks}, task) {
+      tasks.push( task )
     },
     setFetchedData(state, taskArr) {
-      state.tasks = taskArr
+      state.tasks = [...taskArr]
     },
-    resetTasks(state) {
-      state.tasks = []
-    }
+    setLoading(state, status) {
+      state.isLoading = status
+    },
   },
 
   actions: {
@@ -40,7 +44,7 @@ export const store = createStore({
     },
 
     async fetchTasks({state, commit}) {
-      commit('resetTasks')
+      commit('setLoading', true)
       try {
         const response = await axios.get(state.apiUrl)
         if (response.data) {
@@ -51,9 +55,12 @@ export const store = createStore({
           commit('setFetchedData', dataArr)
         }
       } catch(e) {
-        console.log()
+        console.log(e)
       }
-    }
+      finally {
+        commit('setLoading', false)
+      }
+    },
 
   }
 })
