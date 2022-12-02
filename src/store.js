@@ -17,6 +17,9 @@ export const store = createStore({
     taskItem: ({tasks}) => (id) => {
       return tasks.find( t => t.id === id ) ?? {}
     },
+    isLoading({isLoading}) {
+      return isLoading
+    }
   },
 
   mutations: {
@@ -61,6 +64,23 @@ export const store = createStore({
         commit('setLoading', false)
       }
     },
+
+    async changeTaskStatus({state, commit}, { id, status }) {
+      commit('setLoading', true)
+      try {
+        const task = state.tasks.find(el => el.id===id )
+
+        if (task) {
+          task.status = status
+          await axios.patch( `${state.apiUrl}/${id}/status`, status )
+        }
+
+      } catch(e) {
+        console.log(e)
+      } finally {
+      commit('setLoading', false)
+}
+    }
 
   }
 })

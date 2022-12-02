@@ -54,7 +54,6 @@ export default {
       }
       store.dispatch( 'createTask', payload )
     }
-
     return {
       taskName,
       taskDescription,

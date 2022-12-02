@@ -8,9 +8,18 @@
     <p><strong>Дэдлайн</strong>: {{computedTask.deadline}}</p>
     <p><strong>Описание</strong>: {{computedTask.description}}</p>
     <div>
-      <button class="btn">Взять в работу</button>
-      <button class="btn primary">Завершить</button>
-      <button class="btn danger">Отменить</button>
+      <button
+        class="btn"
+        @click="changeStatus('pending')"
+      >Взять в работу</button>
+      <button
+          class="btn primary"
+          @click="changeStatus('done')"
+          >Завершить</button>
+      <button
+          class="btn danger"
+          @click="changeStatus('cancelled')"
+      >Отменить</button>
     </div>
   </div>
   <div
@@ -63,11 +72,11 @@ export default {
       task.description = description
     }
 
-    async function setTask() {
+    function setTask() {
       setTaskValues()
 
       if (!task.id) {
-        await store.dispatch('fetchTasks')
+        store.dispatch('fetchTasks')
         setTaskValues()
       }
     }
@@ -75,6 +84,11 @@ export default {
     function returnToMain() {
       router.push('/')
     }
+
+    function changeStatus( status ) {
+      store.dispatch( 'changeTaskStatus', { id: taskId.value, status } )
+    }
+
 
     onMounted(() => {
       taskId.value = route.params.id
@@ -86,6 +100,7 @@ export default {
       computedTask,
       taskId,
       returnToMain,
+      changeStatus,
     }
   }
 }
