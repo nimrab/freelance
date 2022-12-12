@@ -38,6 +38,7 @@
 <script>
 import {ref} from 'vue'
 import {useStore} from 'vuex'
+import { v4 as uuidv4 } from 'uuid'
 
 export default {
   setup() {
@@ -48,9 +49,11 @@ export default {
 
     const createTask = () => {
       const payload = {
+        id: uuidv4(),
         title: taskName.value,
         description: taskDescription.value,
         deadline: taskDeadline.value,
+        status: 'active',
       }
       store.dispatch( 'createTask', payload )
     }

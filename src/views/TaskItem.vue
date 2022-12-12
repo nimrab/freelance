@@ -86,7 +86,8 @@ export default {
     }
 
     function changeStatus( status ) {
-      store.dispatch( 'changeTaskStatus', { id: taskId.value, status } )
+      const newTask = {...task, status}
+      store.dispatch('changeTask',  newTask)
     }
 
 

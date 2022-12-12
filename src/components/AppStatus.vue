@@ -17,11 +17,11 @@ export default {
     }
 
   const status = computed(()=> {
-    return statusTypes[props.type].text
+    return statusTypes[props.type]?.text ?? ''
   })
 
   const statusClass = computed(()=> {
-    return statusTypes[props.type].class
+    return statusTypes[props.type]?.class ?? ''
   })
 
     return {
