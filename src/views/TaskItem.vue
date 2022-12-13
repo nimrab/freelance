@@ -4,7 +4,7 @@
     class="card"
   >
     <h2>{{computedTask.title}}</h2>
-    <p><strong>Статус</strong>: <AppStatus :type="'done'" /></p>
+    <p><strong>Статус</strong>: <AppStatus :type="computedTask.status" /></p>
     <p><strong>Дэдлайн</strong>: {{computedTask.deadline}}</p>
     <p><strong>Описание</strong>: {{computedTask.description}}</p>
     <div>
@@ -88,6 +88,7 @@ export default {
     function changeStatus( status ) {
       const newTask = {...task, status}
       store.dispatch('changeTask',  newTask)
+      setTaskValues()
     }
 
 
@@ -95,7 +96,6 @@ export default {
       taskId.value = route.params.id
       setTask()
     })
-
 
     return {
       computedTask,

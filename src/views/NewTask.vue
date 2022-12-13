@@ -13,7 +13,7 @@
     <div class="form-control">
       <label for="date">Дата дэдлайна</label>
       <input
-          v-model="taskDeadline"
+        v-model="taskDeadline"
         type="date"
         id="date"
       >
@@ -29,6 +29,7 @@
 
     <button
       class="btn primary"
+      :disabled="isBtnDisabled"
       @click.prevent="createTask"
     >Создать</button>
   </form>
@@ -36,8 +37,9 @@
 
 
 <script>
-import {ref} from 'vue'
+import {computed, ref} from 'vue'
 import {useStore} from 'vuex'
+import {useRouter} from 'vue-router'
 import { v4 as uuidv4 } from 'uuid'
 
 export default {
@@ -45,22 +47,53 @@ export default {
     const taskName = ref('')
     const taskDescription = ref('')
     const taskDeadline = ref('')
-    const store=useStore()
+    const store = useStore()
+    const router = useRouter()
+
+    const reverseDate = (value) => {
+      return value.split('-').reverse().join('.')
+    }
+
+    // const checkStatusOnDate = () => {
+    //   return taskDeadline.value < new Date().to
+    // }
+
+    const getDateFromString = () => {
+      return new Date(
+        +taskDeadline.value.slice(0,4),
+        +taskDeadline.value.slice(5,7) - 1,
+        +taskDeadline.value.slice(8,10),
+      ).setHours(0,0,0,0)
+    }
+
+    const checkStatus = (dateEnd, today) => {
+      console.log( 'dateEnd', dateEnd )
+      console.log( 'today', today )
+      return today > getDateFromString(dateEnd) ? 'cancelled' : 'active'
+    }
 
     const createTask = () => {
       const payload = {
         id: uuidv4(),
         title: taskName.value,
         description: taskDescription.value,
-        deadline: taskDeadline.value,
-        status: 'active',
+        deadline: reverseDate(taskDeadline.value),
+        status: checkStatus(getDateFromString(), new Date().setHours(0,0,0,0)),
       }
       store.dispatch( 'createTask', payload )
+      router.push('/')
     }
+
+    const isBtnDisabled = computed(() => {
+      console.log( 'getDateFromString',getDateFromString() )
+      return !taskName.value || !taskDescription.value || !taskDeadline.value
+    })
+
     return {
       taskName,
       taskDescription,
       taskDeadline,
+      isBtnDisabled,
       createTask,
     }
   }

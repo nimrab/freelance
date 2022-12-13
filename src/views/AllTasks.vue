@@ -12,30 +12,17 @@
   :key="task.id"
 >
   <div class="card">
-    <h2 class="card-title">
+    <div class="title-wrapper">
+      <h2 class="card-title">
         {{task.title}}
-    </h2>
-    <p>
+      </h2>
+      <AppStatus :type="task.status" />
+    </div>
+    <div class="deadline">
       <strong>
-        <small>
-          Статус: <AppStatus :type="task.status" />
-        </small>
+        <small>{{task.deadline}}</small>
       </strong>
-    </p>
-    <p>
-      <strong>
-        <small>
-          Дэдлайн: {{task.deadline}}
-        </small>
-      </strong>
-    </p>
-    <p>
-      <strong>
-        <small>
-          Описание: {{task.description}}
-        </small>
-      </strong>
-    </p>
+    </div>
     <button
       @click="showTaskItem( task.id )"
       class="btn primary"
@@ -49,7 +36,6 @@ import AppStatus from '@/components/AppStatus'
 import {onMounted, computed} from 'vue'
 import {useRouter} from 'vue-router'
 import {useStore} from 'vuex'
-
 
 export default {
   components: {AppStatus},
@@ -68,7 +54,7 @@ export default {
     })
 
     const isEmptyTasks = computed(() => {
-      return !store.getters.tasksArr
+      return !store.getters.tasksArr.length
     })
 
     const activeTasksCount = computed(()=>{
@@ -102,8 +88,27 @@ export default {
   }
 }
 </script>
-<style>
+<style scoped>
 h2 {
   color: black;
+}
+
+.card-title, h2 {
+  margin-bottom: 0;
+}
+
+.title-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #eaecef;
+}
+
+.deadline {
+  margin-top: 20px;
+}
+
+.btn {
+  margin-top: 20px;
 }
 </style>
