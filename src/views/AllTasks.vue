@@ -12,7 +12,10 @@
         v-if="isShowActiveTasks"
         class="text-white"
     >Всего активных задач: {{ activeTasksCount }}</h3>
-    <div class="filters">
+    <div
+      v-if="tasksCount"
+      class="filters"
+    >
       <div class="search">
         <div class="search-text">Поиск:</div>
         <input
@@ -36,8 +39,6 @@
         </select>
       </div>
     </div>
-
-
     <template
         v-for="task in tasks"
         :key="task.id"
@@ -92,7 +93,7 @@ export default {
     const selectValue = ref('all')
 
     const tasksCount = computed(() => {
-      return store.getters.tasksArr
+      return store.getters.tasksArr.length
     })
 
     const tasks = computed(() => {
@@ -122,7 +123,7 @@ export default {
     })
 
     const isShowActiveTasks = computed(() => {
-      return tasks.value.length || inputText || selectValue.value !== 'all'
+      return tasksCount.value
     })
 
     function showTaskItem(id) {
