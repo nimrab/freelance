@@ -52,7 +52,9 @@ export const store = createStore({
       commit('setLoading', true)
       localStorage.setItem('tasks', JSON.stringify([...state.tasks, newTask]))
       commit('addTask', newTask)
-      commit('setLoading', false)
+      setTimeout(()=> {
+        commit('setLoading', false)
+      }, 1000)
     },
 
     // async fetchTasks({state, commit}) {
@@ -76,11 +78,15 @@ export const store = createStore({
 
     fetchTasks({commit}) {
       commit('setLoading', true)
+
       const tasks = JSON.parse(localStorage.getItem('tasks'))
       if ( tasks ) {
         commit('setTasks', tasks)
       }
-      commit('setLoading', false)
+      setTimeout(()=> {
+        commit('setLoading', false)
+      }, 1000)
+
     },
 
     // async changeTaskStatus({state, commit}, { id, status }) {
@@ -102,10 +108,22 @@ export const store = createStore({
 
     changeTask({state, commit}, newTask) {
       commit('setLoading', true)
-      const filteredTasks = state.tasks.map(el=>el.id === newTask.id ? {...newTask} : el)
+      const filteredTasks = state.tasks.map(el => el.id === newTask.id ? {...newTask} : el)
       localStorage.setItem('tasks', JSON.stringify(filteredTasks))
       commit('setTasks', filteredTasks)
+      setTimeout(()=> {
+        commit('setLoading', false)
+      }, 1000)
     },
 
+    deleteTask({state, commit}, id) {
+      commit('setLoading', true)
+      const filteredTasks = state.tasks.filter( el => el.id !== id )
+      localStorage.setItem('tasks', JSON.stringify(filteredTasks))
+      commit('setTasks', filteredTasks)
+      setTimeout(()=> {
+        commit('setLoading', false)
+      }, 1000)
+    },
   }
 })

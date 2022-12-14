@@ -1,40 +1,51 @@
 <template>
   <div
-    v-if="computedTask.id"
-    class="card"
-  >
-    <h2>{{computedTask.title}}</h2>
-    <p><strong>Статус</strong>: <AppStatus :type="computedTask.status" /></p>
-    <p><strong>Дэдлайн</strong>: {{computedTask.deadline}}</p>
-    <p><strong>Описание</strong>: {{computedTask.description}}</p>
-    <div>
-      <button
-        class="btn"
-        @click="changeStatus('pending')"
-      >Взять в работу</button>
+      v-if="isLoading"
+      class="loader"
+  ></div>
+  <div v-else>
+    <div
+        v-if="computedTask.id"
+        class="card"
+    >
+      <h2>{{ computedTask.title }}</h2>
+      <p><strong>Статус</strong>:
+        <AppStatus :type="computedTask.status"/>
+      </p>
+      <p><strong>Дэдлайн</strong>: {{ computedTask.deadline }}</p>
+      <p><strong>Описание</strong>: {{ computedTask.description }}</p>
+      <div>
+        <button
+            class="btn"
+            @click="changeStatus('pending')"
+        >Взять в работу
+        </button>
+        <button
+            class="btn primary"
+            @click="changeStatus('done')"
+        >Завершить
+        </button>
+        <button
+            class="btn danger"
+            @click="changeStatus('cancelled')"
+        >Отменить
+        </button>
+      </div>
+    </div>
+    <div
+        v-if="!computedTask.id"
+        class="return-btn-block"
+    >
+      <h3 class="text-white center">
+        Задача с ID "<strong>{{ taskId }}</strong>" не найдена.
+      </h3>
       <button
           class="btn primary"
-          @click="changeStatus('done')"
-          >Завершить</button>
-      <button
-          class="btn danger"
-          @click="changeStatus('cancelled')"
-      >Отменить</button>
+          @click="returnToMain"
+      >Вернуться на главную
+      </button>
     </div>
   </div>
-  <div
-    v-if="!computedTask.id"
-    class="return-btn-block"
-  >
-    <h3 class="text-white center">
-      Задача с ID "<strong>{{taskId}}</strong>" не найдена.
-    </h3>
-    <button
-      class="btn primary"
-      @click="returnToMain"
-    >Вернуться на главную</button>
-  </div>
-
 </template>
 
 <script>
@@ -59,8 +70,12 @@ export default {
       description: '',
     })
 
-    const computedTask = computed(()=> {
+    const computedTask = computed(() => {
       return task
+    })
+
+    const isLoading = computed(() => {
+      return store.getters.isLoading
     })
 
     function setTaskValues() {
@@ -85,9 +100,9 @@ export default {
       router.push('/')
     }
 
-    function changeStatus( status ) {
+    function changeStatus(status) {
       const newTask = {...task, status}
-      store.dispatch('changeTask',  newTask)
+      store.dispatch('changeTask', newTask)
       setTaskValues()
     }
 
@@ -100,6 +115,7 @@ export default {
     return {
       computedTask,
       taskId,
+      isLoading,
       returnToMain,
       changeStatus,
     }
